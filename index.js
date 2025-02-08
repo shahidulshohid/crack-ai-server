@@ -1,15 +1,10 @@
 const express = require('express');
-const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 5000
 
 
-// middleware 
-app.use(cors())
-app.use(express.json())
-
-app.post('/', (req, res) => {
-   res.send("server is running")
+app.get('/', (req, res) => {
+   res.send({message: "crack the power of ai"})
 })
 
-app.listen(port, ()=>console.log("server is running PORT", port ))
+app.listen(port, ()=>console.log("server is running on PORT", port ))
