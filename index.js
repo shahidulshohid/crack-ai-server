@@ -8,7 +8,7 @@ const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
-app.get("make-decision", async (req, res) => {
+app.get("/rumor-detector", async (req, res) => {
   const prompt = req.query?.prompt;
   if (!prompt) {
     res.send({ message: "please provide a prompt in query" });
@@ -18,7 +18,11 @@ app.get("make-decision", async (req, res) => {
     history: [
       {
         role: "user",
-        parts: [{ text: "When i give any text. You have to tell me the rumor percentage of the text" }],
+        parts: [
+          {
+            text: "When i give any text. You have to tell me the rumor percentage of the text",
+          },
+        ],
       },
       {
         role: "model",
@@ -26,7 +30,11 @@ app.get("make-decision", async (req, res) => {
       },
       {
         role: "user",
-        parts: [{ text: "Bangladesh is secretly building a floating city in the bay of bangla powered entirely by solar energy amd ai driven technology" }],
+        parts: [
+          {
+            text: "Bangladesh is secretly building a floating city in the bay of bangla powered entirely by solar energy amd ai driven technology",
+          },
+        ],
       },
       {
         role: "model",
@@ -52,7 +60,7 @@ app.get("make-decision", async (req, res) => {
   });
   let result = await chat.sendMessage(prompt);
   const answer = result.response.text();
-  res.send({rumorStatus: answer});
+  res.send({ rumorStatus: answer });
 });
 
 app.get("/test-ai", async (req, res) => {
@@ -65,6 +73,29 @@ app.get("/test-ai", async (req, res) => {
   console.log(result.response.text());
   res.send(result.response.text());
 });
+
+app.get("/generate-json", async (req, res) => {
+  const prompt = req.query?.prompt;
+  if (!prompt) {
+    res.send({ message: "please provide a prompt in query" });
+    return;
+  }
+  const finalPrompt = `generate some data from this prompt ${prompt}  using this JSON schema:
+ data = {'datatype': output}
+Return: Array<Recipe>`;
+  const result = await model.generateContent(finalPrompt);
+  const output = result.response.text().slice(7, -4);
+  const jsonData = JSON.parse(output);
+  res.send(jsonData);
+});
+
+app.get('/gen', async (req, res) => {
+ 
+res.send({})
+console.log({})
+})
+
+
 
 app.get("/", (req, res) => {
   res.send({ message: "crack the power of ai" });
