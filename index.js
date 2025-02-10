@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { default: axios } = require("axios");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
@@ -90,9 +91,14 @@ Return: Array<Recipe>`;
 });
 
 app.get('/gen', async (req, res) => {
- 
-res.send({})
-console.log({})
+  const prompt = req.query?.prompt;
+  if (!prompt) {
+    res.send({ message: "please provide a prompt in query" });
+    return;
+  }
+  const response = await axios.get(prompt, {responseType: 'arraybuffer'})
+  console.log(response)
+res.send({message: 'shahidulislamshohid'})
 })
 
 
